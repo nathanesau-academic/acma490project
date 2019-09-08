@@ -1,0 +1,372 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1.0in]{geometry}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{subcaption}
+\usepackage{parskip}
+\usepackage[title,toc]{appendix}
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+
+\captionsetup[sub]{font=footnotesize}
+
+\hypersetup
+{
+	colorlinks,
+	linkcolor = black,
+	urlcolor = black,
+	citecolor = black
+}
+
+\usepackage{booktabs}
+\usepackage{array}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}p{1cm}}
+
+\usepackage{apacite}
+\bibliographystyle{apacite}
+
+%\usepackage{natbib}
+
+%\renewcommand{\bibsection}{\chapter*{\refname}}
+
+\pagestyle{fancy}
+
+\lhead{Acma 490 Project}
+\rhead{Nathan Esau}
+
+\title{Acma 490 Project}
+\author{Nathan Esau}
+\date{Spring 2017}
+
+\begin{document}
+\nocite{*}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+\section{Executive Summary}
+
+This report details the findings regarding the new endowment insurance product your company is considering to launch. This non-taxable product should be attractive to wealthy investors (who may have used their max TFSA or RRSP room already) for two reasons:
+
+\begin{enumerate}[(i)]
+\item If the policyholder dies during the contract term, they get a substantial death benefit (between \$500,000 to \$5,000,000).
+\item If the policyholder survives the contract term they will typically earn a positive return on their premium (up to 7.5\% depending on their age and the term of the product). Furthermore, this return is not taxable.
+\end{enumerate}
+
+This report assumed that investors want the highest survival benefit possible in relation to their death benefit. For example, a female policyholder aged 30 would prefer \$25,000 of survival benefit to \$20,000 when the death benefit is \$1,000,000. The rationale is that investors hope to earn a positive, non-taxable return should they survive the contract term.
+
+In order to satisfy the regulation such that the product is classified as insurance, the death benefit must be significantly larger than the survival benefit (for most ages). For instance, a female policyholder aged 30 would require a death benefit around 40 times larger than their survival benefit. 
+
+This makes the insurance risk much higher for young ages. For instance, a female policyholder aged 30 would pay around \$20,000 for a 10-year product with \$1,000,000 of death benefit and \$25,000 of survival benefit. If the policyholder dies, there is a massive loss for the insurer. It is possible for this type of risk to be mitigated through pooling.
+
+Longer term contracts have less mortality risk, but more investment risk. The rationale is that we are likely to pay the survival benefit, but we are uncertain about the return earned over long periods.
+
+Investment risk could be reduced by selling shorter-term contracts, but this would create more insurance risk. However, investors are likely to demand 10 year contracts since they lead to higher returns for the survival benefit so it may be necessary to offer these contacts. If the investment risk is a still a concern, a safer investment strategy could be considered. However, if this were done investors would need to be charged a higher premium making the product less competitive.
+
+The pricing was done quite conservatively -- an Ornstein-Uhlenbeck process with 5\% long-term mean was used to model returns, whereas historical company returns have consistently been above 5\%. Should investments continue to perform as well as they have historically, the charged premium is higher than needed which would lead to insurer profits.
+
+The analysis in this report revealed that with 2000 policies, the standard deviation per policy is around 8\% of the premium. About 9\% of this risk is coming from mortality risk and 91\% is coming from investment risk. Using a benchmark standard deviation of 10\% of premium as ``acceptable'' this product is feasible to sell in the market since the standard deviation per dollar premium is only 8\%.
+
+\section{Assumptions}
+
+\subsection{Interest Rate}
+
+The interest rate was modeled by an Ornstein-Uhlenbeck process. Parameters were estimated using historical company returns from the past 5 years (monthly observation frequency, annualized returns). A long-term rate of 5\% was assumed.
+
+The least-squares method gave a AR(1) process with $\phi_{1} = 0.9793$, $\sigma_{2} =  0.00372$, $\delta_{0} = 0.0767$ and $\delta = 0.05$. This is equivalent to an OU process with $\delta_{0} = 0.0767$, $\delta = 0.05$, $\alpha = 0.2506$ and $\sigma = 0.01302$.
+
+A forecast of the future interest rate is shown in Figure \ref{fig:ouforecast}. An OU process fit to historical returns from 1991 to 2017 is shown in Appendix A.1.
+
+\begin{figure}[ht]
+\begin{center}
+\vspace{-12.5mm}
+\includegraphics[width=0.75\textwidth]{images/arforecast}
+\end{center}
+\caption{Expected interest rate over next 10 years using an OU process with $\delta_{0} = 0.0767$, $\delta = 0.05$, $\alpha = 0.2506$ and $\sigma = 0.01302$. The 80\% and 95\% confidence intervals are shown.}
+\label{fig:ouforecast}
+\end{figure}
+
+It is worth mentioning that historical returns have been much higher than 5\% as shown in Appendix A.1. Pricing at a 5\% interest rate leads to a higher premium than if the historical average return were used.
+
+\subsection{Mortality}
+
+The 1991 Canadian Life Table was used. Male and Female policyholders were analyzed separately since they have quite different mortality for older ages. This is demonstrated in Figure \ref{fig:curvedeaths}.
+
+\begin{figure}[ht]
+\begin{center}
+\vspace{-12.5mm}
+\includegraphics[width=0.75\textwidth]{images/curvedeaths}
+\end{center}
+\vspace{-2.5mm}
+\caption{Curves of deaths for 100,000 newborns based on 1991 Canadian life table}
+\label{fig:curvedeaths}
+\end{figure}
+
+\subsection{Age Distribution}
+
+It was assumed that policyholders range in age from 25 to 75, with the most policyholders in the age intervals 45-49 and 50-54.
+
+This makes sense from a practical standpoint. This product is targeted towards wealthy investors. This makes it unlikely that a large number of young policyholders (who are less wealthy) would purchase this product. Those around 50 years around are looking for financial protection should they die before retirement, and investment income should they survive. The mode of the population is around age 50 as well (i.e. the baby boomer generation) so it makes sense that the most policyholders would be this age.
+
+It's also unlikely that there would a large number of old policyholders because there are less old people in the population.
+
+A histogram of the age distribution compared to the population distribution can be found in Appendix A.3.
+
+\section{Product Analysis}
+
+The product is a non-taxable endowment insurance with death benefit $d$ and survival benefit $e$. In this section, the risk of the product for a single policy is analyzed.
+
+\subsection{Regulation and Pricing}
+
+To attract investors, the survival benefit should be as large as possible. However, for the product to qualify as insurance (non-taxable) the survival benefit cannot exceed 75\% of the total benefits or 2 times the death benefit. This means that
+%
+\begin{align}
+e = \min\left\{2, \ 3 \times \dfrac{EPV(\text{Term Insurance Contract})}{EPV(\text{Pure Endowment Contract})} \right\}
+\label{eqn:endowbenefit}
+\end{align}
+
+The $EPV$ of the term insurance contract and pure endowment contract for various ages and terms can be found in Appendix A.4.
+
+It should be pointed out that this condition on the survival benefit leads to much larger death benefits than survival benefits for the majority of ages as shown in Table \ref{tab:faceAmountTable}.
+
+\input{tables/faceAmountTable}.
+
+Some of the policies are quite expensive (for instance, a 10-year contract issued to a Female aged 75 would cost \$995,900). For such a policy, the insurer is not so much concerned about the policyholder dying -- rather the risk is that the policyholder survives. Should this policyholder survive, they are guaranteed a return of 6.48\% (see Table \ref{tab:returnTable}). Having a non-taxable guaranteed return of 6.48\% is attractive to potential policyholders, but risky to offer for the insurer due to the investment risk involved.
+
+\input{tables/returnTable}
+
+The risk of the term insurance component (i.e. death benefit) and pure endowment component (i.e. survival benefit) are analyzed next.
+
+\subsection{Term Insurance Component}
+
+The product we are offering pays a benefit of $d$ if the policyholder dies within the term of the contract.
+
+The standard deviation per dollar premium is shown in Figure \ref{fig:sdterm}. The following observations can be made:
+
+\begin{itemize}
+\item The standard deviation per dollar premium is highest for young ages and short term contracts. This standard deviation is almost exclusively coming from the insurance risk and not the investment risk.
+\item Female policyholders are less likely to die, so they pay less than male policyholders for an equivalent death benefit. This makes the standard deviation per dollar premium higher for female policyholders.
+\end{itemize}
+
+\begin{figure}[ht]
+\begin{center}
+\vspace{-20mm}
+\centerline{
+\includegraphics[width=0.6\textwidth]{images/termSDPlotMale}
+\includegraphics[width=0.6\textwidth]{images/termSDPlotFemale}}
+\end{center}
+\vspace{-10mm}
+\caption{Standard deviation per dollar of the net single premium for $n$-year term insurance at various issue ages (male: left, female: right)}
+\label{fig:sdterm}
+\end{figure}
+
+Figure \ref{fig:sdterm} highlights why pooling is necessary. Most of the risk associated with the term component can be mitigated by selling a many policies to similar ages as shown later.
+
+\subsection{Pure endowment component}
+
+The product we are offering pays $e$ upon survival. For the pure endowment component, the standard deviation per dollar premium is shown in Figure \ref{fig:sdpure}.
+
+\begin{figure}[!ht]
+\begin{center}
+\vspace{-12mm}
+\centerline{
+\includegraphics[width=0.6\textwidth]{images/pureSDPlotMale}
+\includegraphics[width=0.6\textwidth]{images/pureSDPlotFemale}}
+\end{center}
+\vspace{-10mm}
+\caption{Standard deviation per dollar of the net single premium for $n$-year pure endowment insurance at various issue ages (male: left, female: right)}
+\label{fig:sdpure}
+\end{figure}
+
+The risk is worse for older ages, since we are unsure whether these policyholders will survive. Also, the risk is worse for longer contracts. This makes sense as the standard deviation of the present value is increasing for $n < 10$ (see Figure \ref{fig:pvvar}).
+
+\begin{figure}[ht]
+\vspace{-10mm}
+\begin{center}
+\includegraphics[width=0.55\textwidth]{images/varpv}
+\vspace{-5mm}
+\end{center}
+\caption{Standard deviation of present value function for term $n$}
+\label{fig:pvvar}
+\end{figure}
+
+\subsection{Endowment contract}
+
+For a death benefit of $d$ and survival benefit of $e$ satisfying the regulation (i.e. using Equation \ref{eqn:endowbenefit}) we can look at the standard deviation per dollar premium. This is shown in Figure \ref{fig:sdendow}.
+
+\begin{figure}[!htpb]
+\begin{center}
+\vspace{-15mm}
+\centerline{
+\includegraphics[width=0.6\textwidth]{images/endowSDPlotMale}
+\includegraphics[width=0.6\textwidth]{images/endowSDPlotFemale}}
+\end{center}
+\vspace{-10mm}
+\caption{Standard deviation per dollar of the net single premium for $n$-year endowment insurance at various issue ages (male: left, female: right)}
+\label{fig:sdendow}
+\end{figure}
+
+We can see that the shape is very similar to that of a term insurance contract, since, to satisfy the regulation, the death benefit is far larger than the survival benefit for most ages.
+
+\section{Portfolio of policies}
+
+The standard deviation per dollar premium can also be analyzed for a portfolio (Figure \ref{fig:portfoliosd}).
+
+\vspace{-11mm}
+\begin{figure}[!htpb]
+\begin{center}
+\centerline{
+\begin{minipage}[b]{0.55\textwidth}
+\begin{center}
+\includegraphics[width=1.0\textwidth]{images/portfolioRiskMale5}
+\end{center}
+\subcaption{$n$ = 5 (Male)}
+\end{minipage}
+\begin{minipage}[b]{0.55\textwidth}
+\begin{center}
+\includegraphics[width=1.0\textwidth]{images/portfolioRiskFemale5}
+\end{center}
+\subcaption{$n$ = 5 (Female)}
+\end{minipage}
+}
+\vspace{-8mm}
+\centerline{
+\begin{minipage}[b]{0.55\textwidth}
+\begin{center}
+\includegraphics[width=1.0\textwidth]{images/portfolioRiskMale10}
+\end{center}
+\subcaption{$n$ = 10 (Male)}
+\end{minipage}
+\begin{minipage}[b]{0.55\textwidth}
+\begin{center}
+\includegraphics[width=1.0\textwidth]{images/portfolioRiskFemale10}
+\end{center}
+\subcaption{$n$ = 10 (Female)}
+\end{minipage}
+}
+\end{center}
+\caption{Standard deviation per dollar premium for $c$ identical $n$-year endowment contracts}
+\label{fig:portfoliosd}
+\end{figure}
+
+The question addressed here is -- how many contracts are needed to remove the insurance risk through pooling? We can see that to get close to the limiting standard deviation (i.e. no insurance risk), around 100 policies are needed in most cases.
+
+While we may not have 100 policies for a specific age and term, the curve of deaths is relatively flat between 20 and 40. Therefore, if we have many policyholders with similar ages and terms, we should be able to eliminate most of the insurance risk. 
+
+It is harder to eliminate the insurance risk for older ages (since the curve of deaths is not flat between 60 to 70), so the ages need to be very close together for pooling to work. However, the death benefit is also much smaller for older ages in comparison to the premium. So the insurance risk for these policies is not as concerning to us as the insurance risk for the younger ages.
+
+Note that the limiting portfolio still has a positive standard deviation per dollar premium. This is due to the investment risk, which is not removed through pooling.
+
+\subsection{Groups of policies}
+
+To obtain some results on the investment and insurance risk for a product, an illustrative portfolio of 2000 contracts was constructed as follows:
+
+\begin{itemize}
+\item The age distribution follows the distribution shown in Appendix A.3 with policyholder ages ranging from 25 to 75 (midpoint of each age interval used).
+\item 1/2 of the endowment contracts have term $n = 5$ and 1/2 have term $n = 10$.
+\item 1/2 of the contracts are issued to males and 1/2 of the contracts are issued to females.
+\item 4/5 of the contracts have death benefit \$500,000 and 1/5 of the contracts have death benefit \$5,000,000.
+\end{itemize}
+
+The illustrative portfolio can be found in Appendix A.5.
+
+\subsection{Investment and insurance risk}
+
+The net single premium, insurance risk, investment risk and standard deviation per policy for the Illustrative Portfolio are shown in Table \ref{tab:risktable}.
+
+\input{tables/riskTable}
+
+We can see that, for 200 policies, the insurance risk is about the same size as the investment risk, whereas for 2000 policies, the insurance risk has decreased significantly as a result of pooling. It would be possible to decrease the insurance risk even more by selling more policies. However, this product is targeted to wealthy investors and there is a limited number of wealthy people. So selling more policies is unlikely to be an option.
+
+Decreasing the insurance risk more isn't much of a concern though. At $c = 2000$ policyholders, the insurance risk is only 9\% of the total risk, so it's already mostly mitigated. Even the insurance risk of 5 year policies, which is significant for a single policyholder (i.e. see Figure \ref{fig:sdendow}) is mostly mitigated.
+
+Our attention now turns to the investment risk. This is much higher for 10 year policies than for 5 year policies. The reason for this is because the standard deviation of the present value is higher for a 10 year investment than for a 5 year investment (i.e. see Figure \ref{fig:pvvar}). Therefore, obvious way to decrease the investment risk is to sell shorter policies. However, the issue with this is that investors may have a preference for longer term policies as these offer a higher return upon survival (i.e. see Table \ref{tab:returnTable}).
+
+In fact, the investment risk is highest for policies for long term contracts with large survival benefits (i.e. those issued to older ages). But these policyholders also pay a much higher premium (see Table \ref{tab:faceAmountTable}) so the standard deviation per dollar premium is not necessarily higher for these policyholders.
+
+\section{Conclusion}
+
+The main findings of this support are now summarized.
+
+Firstly, the standard deviation per dollar premium is highest for short term contracts issued to younger ages since these policies have a significantly larger death benefit than survival benefit. The majority of this risk is coming from the insurance risk. However, with a portfolio size of $c = 2000$ this insurance risk can be mostly mitigated through pooling.
+
+On the other hand, the investment risk is higher for long term policies with large survival benefits. This risk cannot be removed through pooling. It may be possible to hedge this risk, but this would be expensive and we would have to charge a higher premium to make up for this cost, making the product less competitive.
+
+The standard deviation in comparison to the premium collected was found to be around 8\% for a portfolio size of $c = 2000$. If management believes this is acceptable, this product could be sold. If this is still too high, the simplest thing to do would be to sell shorter term contracts (if investors are still willing to buy these).
+
+\newpage
+
+\begin{appendices}
+
+\section{Additional Tables and Figures}
+
+\subsection{OU Process using returns from 1991 to 2017}
+
+\begin{figure}[ht]
+\begin{center}
+\vspace{-12.5mm}
+\includegraphics[width=0.65\textwidth]{images/arforecast1991}
+\end{center}
+\vspace{-2.5mm}
+\caption{Expected interest rate over next 10 years using an OU process with $\delta_{0} = 0.0767$, $\delta = 0.1159$, $\alpha = 0.1352$ and $\sigma = 0.01501$. The 80\% and 95\% confidence intervals are shown.}
+\label{fig:ouforecast1991}
+\end{figure}
+
+\subsection{Risk for Alternative Interest Rate Models}
+
+\subsubsection{OU Process using returns from 1991 to 2017}
+
+The results of Section 4.2 are recalculated here using the OU process  from Appendix A.1. The net single premium is lower as a result of the higher interest rate, but the standard deviation is higher as a result of the higher investment volatility.
+
+\input{tables/risktable1991}
+
+\subsubsection{Covariance equivalent AR(1) Process}
+
+The covariance equivalent AR(1) process is $\phi = 0.77835$, $\sigma = 0.01289$, $\delta = 0.05$ and $\delta_{0} = 0.0767$. Using this (discrete) process gives similar results to using a OU process (i.e. Table \ref{tab:risktableAR1} is similar to Table \ref{tab:risktable}) as expected.
+
+\input{tables/risktableAR1}
+
+\subsubsection{Deterministic Interest Rate}
+
+As expected, there is no investment risk when a deterministic interest rate is used. The standard deviation for the portfolio goes to 0 as the number of policies increases. Since $\delta_{0} > \delta$ the expected interest rate is higher when an OU process is used. This makes the $NSP$ lower for an OU process.
+
+\input{tables/risktableDeterm}
+
+\newpage
+
+\subsection{Portfolio age distribution}
+
+\begin{figure}[!htpb]
+\begin{center}
+\vspace{-10mm}
+\includegraphics[width=0.7\textwidth]{images/agedistribution}
+\end{center}
+\vspace{-3mm}
+\caption{Assumed age distribution alongside 2016 Canadian population table}
+\label{fig:agedistribution}
+\end{figure}
+
+\subsection{EPV for term and pure endowment contracts}
+
+\input{tables/epvTable}
+
+\newpage
+
+\subsection{Illustrative Portfolio}
+
+\input{tables/groupsTable}
+
+\end{appendices}
+
+\linespread{1.5}
+
+\bibliography{sources}
+
+\end{document}
